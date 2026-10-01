@@ -15,13 +15,3 @@
   </p>
 </div>
 
----
-
-## 🌊 Tentang Repositori Ini
-
-Repositori ini difungsikan sebagai ruang kerja (*workspace*) utama untuk berbagai eksperimen dan tugas pengembangan perangkat lunak *mobile*. Fokus utama pembelajaran mencakup:
-- Pemahaman pemrograman *asynchronous* menggunakan **Kotlin Coroutines** dan **Flow**.
-- Pembangunan antarmuka reaktif dan modern menggunakan **Jetpack Compose** & **Compose Multiplatform**.
-- Implementasi sistem tata letak dan desain komponen menggunakan **Material Design 3**.
-- Pengelolaan dependensi dan sinkronisasi proyek menggunakan **Gradle**.
-# CONTOH_2
