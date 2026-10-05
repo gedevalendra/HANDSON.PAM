@@ -22,12 +22,25 @@ fun main() = runBlocking {
 
     // TODO 1: Jalankan writeAccessLog("Checkout dimulai") dengan launch
     //         (kita tidak butuh return value-nya).
+    // launch menjalankan coroutine baru secara background (fire-and-forget).
+    launch {
+        writeAccessLog("Checkout dimulai")
+    }
 
     // TODO 2: Jalankan calculateTotalPrice(prices) dengan async, simpan
     //         Deferred<Int>-nya ke sebuah variabel.
+    // async menjalankan coroutine dan berjanji akan mengembalikan nilai (Deferred).
+    val deferredTotal = async {
+        calculateTotalPrice(prices)
+    }
 
     // TODO 3: Ambil hasil total dari Deferred tersebut dengan await(),
     //         lalu cetak "Total belanja: Rp<total>".
+    // await() akan menunggu hingga proses async selesai dan mengambil nilai Int-nya.
+    val total = deferredTotal.await()
+    println("Total belanja: Rp$total")
 
-    // Kode kamu di sini...
+    // Expected Output (karena async delay 700ms dan launch delay 500ms):
+    // [LOG] Checkout dimulai
+    // Total belanja: Rp50000
 }

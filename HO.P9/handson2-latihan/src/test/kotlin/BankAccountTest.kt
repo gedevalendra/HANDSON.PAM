@@ -1,5 +1,4 @@
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -16,30 +15,41 @@ class BankAccountTest {
     @Test
     @DisplayName("Deposit menambah saldo dengan benar")
     fun testDeposit() {
-        // TODO 1 (Arrange): buat BankAccount dengan saldo awal 100.0
-        // TODO 2 (Act): panggil deposit(50.0)
-        // TODO 3 (Assert): assertEquals(150.0, account.balance)
+        // Arrange: buat BankAccount dengan saldo awal 100.0
+        val account = BankAccount(100.0)
 
-        fail("TODO: lengkapi testDeposit()")
+        // Act: panggil deposit(50.0)
+        account.deposit(50.0)
+
+        // Assert: verifikasi saldo akhir menjadi 150.0
+        assertEquals(150.0, account.balance)
     }
 
     @Test
     @DisplayName("Withdraw mengurangi saldo saat saldo cukup")
     fun testWithdrawSufficientBalance() {
-        // TODO: Arrange-Act-Assert untuk saldo awal 100.0, withdraw 40.0,
-        // hasil akhir harus 60.0
+        // Arrange
+        val account = BankAccount(100.0)
 
-        fail("TODO: lengkapi testWithdrawSufficientBalance()")
+        // Act
+        account.withdraw(40.0)
+
+        // Assert: saldo awal 100.0 dikurangi 40.0 = 60.0
+        assertEquals(60.0, account.balance)
     }
 
     @Test
     @DisplayName("Withdraw melempar InsufficientFundsException saat saldo tidak cukup")
     fun testWithdrawInsufficientBalance() {
-        // TODO 1 (Arrange): buat BankAccount dengan saldo awal 50.0
-        // TODO 2 (Act + Assert): gunakan
-        //   assertThrows<InsufficientFundsException> { account.withdraw(100.0) }
-        // untuk memastikan exception yang tepat dilempar
+        // Arrange: buat BankAccount dengan saldo awal 50.0
+        val account = BankAccount(50.0)
 
-        fail("TODO: lengkapi testWithdrawInsufficientBalance()")
+        // Act + Assert: pastikan error terlempar dengan tipe InsufficientFundsException
+        val exception = assertThrows<InsufficientFundsException> {
+            account.withdraw(100.0)
+        }
+
+        // Opsional (tapi disarankan): Memastikan pesan error yang keluar juga sesuai
+        assertEquals("Saldo tidak cukup: saldo=50.0, diminta=100.0", exception.message)
     }
 }

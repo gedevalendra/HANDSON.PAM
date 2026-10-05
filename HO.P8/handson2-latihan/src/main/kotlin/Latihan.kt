@@ -4,11 +4,11 @@
 
 // TODO 1: Buat class InsufficientBalanceException yang meng-extend Exception
 //         dan menerima parameter message: String
-// class InsufficientBalanceException(...) : ...
+class InsufficientBalanceException(message: String) : Exception(message)
 
 class BankAccount(private val owner: String, startBalance: Double) {
     var balance: Double = startBalance
-        private set
+        private set // Setter dijadikan private agar saldo tidak bisa diubah langsung dari luar class
 
     fun deposit(amount: Double) {
         require(amount > 0) { "Jumlah deposit harus lebih besar dari 0" }
@@ -21,7 +21,14 @@ class BankAccount(private val owner: String, startBalance: Double) {
         // TODO 2: Jika amount > balance, lempar InsufficientBalanceException
         //         dengan pesan yang menyebutkan nama pemilik, saldo, dan
         //         jumlah yang diminta.
+        if (amount > balance) {
+            throw InsufficientBalanceException(
+                "Transaksi Gagal: Saldo $owner (Rp$balance) tidak mencukupi untuk melakukan penarikan sebesar Rp$amount."
+            )
+        }
+
         // TODO 3: Jika cukup, kurangi balance dengan amount.
+        balance -= amount
     }
 }
 
@@ -34,7 +41,20 @@ fun main() {
     // TODO 4: Panggil account.withdraw(500_000.0) di dalam try-catch,
     //         tangkap InsufficientBalanceException secara spesifik dan
     //         cetak pesan errornya (JANGAN biarkan program crash).
+    try {
+        println("Mencoba menarik Rp500000.0...")
+        account.withdraw(500_000.0)
+    } catch (e: InsufficientBalanceException) {
+        // Menangkap error kustom yang kita buat tanpa membuat program force close
+        println(e.message)
+    }
 
     account.withdraw(30_000.0)
     println("Saldo akhir: ${account.balance}")
 }
+
+// Output yang diharapkan:
+// Saldo setelah deposit: 150000.0
+// Mencoba menarik Rp500000.0...
+// Transaksi Gagal: Saldo Andi (Rp150000.0) tidak mencukupi untuk melakukan penarikan sebesar Rp500000.0.
+// Saldo akhir: 120000.0

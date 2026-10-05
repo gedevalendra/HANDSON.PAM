@@ -5,9 +5,6 @@ import kotlinx.coroutines.*
 // (disimulasikan dengan delay) sebagai child coroutine dari satu Job. Jika
 // Job tersebut dibatalkan (cancel), SEMUA child coroutine yang belum
 // selesai harus ikut berhenti (ini yang disebut structured concurrency).
-//
-// CATATAN: File ini SENGAJA belum bisa di-compile sampai kamu melengkapi
-// semua TODO di bawah — itu normal untuk latihan ini!
 
 class DownloadManager(private val scope: CoroutineScope) {
 
@@ -17,31 +14,52 @@ class DownloadManager(private val scope: CoroutineScope) {
         //         - delay(durationMs) untuk simulasi proses download
         //         - println("$name selesai di-download") setelah delay
         //         Kembalikan Job dari launch tersebut.
-        // val job = ???
-        // return job
+        val job = scope.launch {
+            delay(durationMs)
+            println("$name selesai di-download")
+        }
+        return job
     }
 }
 
 fun main() = runBlocking {
     // TODO 2: Buat sebuah Job induk (parent) baru dengan Job()
-    // val parentJob = ???
+    // Ini akan bertindak sebagai pengontrol utama (parent) untuk semua
+    // coroutine anak (child) yang diluncurkan di bawahnya.
+    val parentJob = Job()
 
     // TODO 3: Buat CoroutineScope baru dari parentJob tersebut
     //         (gunakan CoroutineScope(parentJob))
-    // val scope = ???
+    // Scope ini menjadi "ruang lingkup" yang terikat pada parentJob.
+    val scope = CoroutineScope(parentJob)
 
     val manager = DownloadManager(scope)
 
+    // Memulai 3 proses download secara bersamaan (concurrent)
     manager.downloadFile("foto.jpg", 1000)
     manager.downloadFile("video.mp4", 3000)
     manager.downloadFile("dokumen.pdf", 1500)
 
-    delay(1200) // Beri waktu foto.jpg dan dokumen.pdf selesai
+    // Main coroutine menunggu selama 1.2 detik
+    // Dalam waktu ini:
+    // - foto.jpg (1000ms) akan selesai dan tercetak
+    // - dokumen.pdf (1500ms) dan video.mp4 (3000ms) masih berjalan
+    delay(1200)
 
     println("Membatalkan sisa download...")
-    // TODO 4: Batalkan parentJob dengan cancel() — video.mp4 (durasi 3000ms)
-    //         seharusnya TIDAK sempat mencetak "selesai di-download".
 
-    delay(2000) // Tunggu untuk membuktikan video.mp4 memang tidak selesai
+    // TODO 4: Batalkan parentJob dengan cancel()
+    // Membatalkan parentJob secara otomatis akan membatalkan SEMUA
+    // coroutine anak (dokumen.pdf dan video.mp4) yang masih aktif.
+    parentJob.cancel()
+
+    // Menunggu 2 detik tambahan untuk membuktikan bahwa
+    // dokumen.pdf dan video.mp4 benar-benar dibatalkan dan tidak mencetak "selesai".
+    delay(2000)
     println("Selesai.")
 }
+
+// Output yang diharapkan:
+// foto.jpg selesai di-download
+// Membatalkan sisa download...
+// Selesai.
